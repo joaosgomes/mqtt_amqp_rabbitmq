@@ -1,18 +1,32 @@
 const mqtt = require('mqtt')
 
-var urlraspberrypi = 'mqtt://raspberrypi.local:1883';
+var urlraspberrypi_mdns = 'mqtt://raspberrypi.local:1883';
 
-const client = mqtt.connect(urlraspberrypi)
+var urlraspberrypitunnel = 'ws://raspberrypi-mqtt.joaosilvagomes.com/ws';
+
+const connectUrl = `ws://raspberrypi.local:15675/ws`
+
+const client = mqtt.connect(urlraspberrypitunnel,
+    {
+        clean: true,
+        connectTimeout: 4000,
+        reconnectPeriod: 1000,
+        protocol: 'ws'
+    })
 
 
 
 client.on('connect', function () {
-    client.subscribe('topic 1', function (err) {
+    client.subscribe('topic test', function (err) {
         if (!err) {
             let timestamp = new Date().toISOString();
             let message = `Message Timestamp:  ${timestamp}`
-            client.publish('topic 1', message)
+            client.publish('topic test', message)
         }
+        else {
+            console.log(err);
+        }
+
     })
 })
 
